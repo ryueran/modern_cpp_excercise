@@ -1,0 +1,1 @@
+add_executable(main_unqie_ptr main_unique_ptr.cpp)

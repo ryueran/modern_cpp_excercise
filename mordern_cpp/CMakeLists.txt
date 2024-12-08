@@ -1,0 +1,3 @@
+add_subdirectory(alias_declarations)
+add_subdirectory(Paramter_Type_Length)
+add_subdirectory(smart_pointer)
