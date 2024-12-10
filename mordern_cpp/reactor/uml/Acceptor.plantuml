@@ -1,0 +1,9 @@
+@startuml
+class Acceptor
+{
+    socket
+    bind()
+    linsten()
+    accept()
+}
+@enduml

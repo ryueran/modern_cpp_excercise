@@ -8,8 +8,8 @@ struct MyAlloc {
     MyAlloc() = default;
     template<typename U>
     MyAlloc(const MyAlloc<U>&) {}
-    T* allocate(std::size_t N) {return static_cast<T*>(operator new(N * (sizeof(T))));}
-    void deallocate(T* p, std::size_t N) {operator delete(p);}
+    T* allocate(std::size_t n) {return static_cast<T*>(::operator new(n * sizeof(T)));}
+    void deallocate(T *p, std::size_t n) {::operator delete(p);}
 };
 
 template<typename T>
