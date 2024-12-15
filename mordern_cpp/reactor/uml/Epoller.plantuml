@@ -1,0 +1,8 @@
+@startuml
+class Epoller
+{
+    update()
+    remove()
+    poll()
+}
+@enduml

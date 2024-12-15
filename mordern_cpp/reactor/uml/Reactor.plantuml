@@ -1,0 +1,7 @@
+@startuml
+class RectangleFontColor{
+    register_handler()
+    remove_handler()
+    loop()
+}
+@enduml

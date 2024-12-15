@@ -1,0 +1,11 @@
+@startuml
+class Handler
+{
+enable_write()
+enable_read()
+enable_close()
+setReadCallBack()
+setWriteCallBack()
+setCloseCallBack()
+}
+@enduml
