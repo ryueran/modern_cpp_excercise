@@ -17,6 +17,11 @@ Acceptor::Acceptor()
     server_addr_.sin_port = htons(PORT);
 }
 
+Acceptor::~Acceptor()
+{
+    std::cout << "Acceptor destructed!" << std::endl;
+}
+
 void Acceptor::server_bind()
 {
     // Bind the socket

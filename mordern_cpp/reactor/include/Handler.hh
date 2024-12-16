@@ -17,20 +17,28 @@ public:
 
     ~Handler()
     {
-        delete message_buff_;
+        std::cout << "Destructed Handler!" << std::endl;
+        // delete message_buff_;
     }
 
     void enable_write();
     void enable_read();
     void enable_close();
-    void setReadCallback(CallBack read_callback);
-    void setWriteCallback(CallBack write_callback);
-    void setCloseCallback(CallBack close_callback);
+    void setReadCallback(CallBack& re_callback);
+    void setWriteCallback(CallBack& wr_callback);
+    void setCloseCallback(CallBack& cl_callback);
+    int get_handler_fd();
+    void handle_event();
+    void set_in_Epoll();
 private:
+    enum class EventType {Read, Write, Close};
     int handler_fd_;
-    int event_type_;
+    EventType event_type_;
     bool isInEpoll_;
-    char message_buff_[BUFFER_SIZE];
+    // char message_buff_[BUFFER_SIZE];
+    CallBack read_callback_;
+    CallBack write_callback_;
+    CallBack close_callback_;
 };
 
 #endif
