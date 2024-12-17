@@ -21,8 +21,8 @@ public:
         std::cout << "Epoller destructed!" << std::endl;
     }
 
-    void update(std::shared_ptr<Handler>& ptr_handler);
-    void remove(std::shared_ptr<Handler>& ptr_handler);
+    void update(Handler* ptr_handler);
+    void remove(Handler* ptr_handler);
     std::vector<std::shared_ptr<Handler>> poll();
 
 private:

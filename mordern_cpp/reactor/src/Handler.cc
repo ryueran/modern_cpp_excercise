@@ -40,6 +40,16 @@ void Handler::set_in_Epoll()
     isInEpoll_ = true;
 }
 
+void Handler::set_out_Epoll()
+{
+    isInEpoll_ = false;
+}
+
+Handler::EventType Handler::get_handler_event()
+{
+    return event_type_;
+}
+
 void Handler::handle_event()
 {
     if(event_type_ == EventType::Write)
@@ -56,4 +66,9 @@ void Handler::handle_event()
     {
         close_callback_(handler_fd_);
     }
+}
+
+bool Handler::is_in_Epoll()
+{
+    return is_in_Epoll;
 }

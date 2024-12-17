@@ -10,9 +10,19 @@ using CallBack = std::function<void(int)>;
 
 class Handler
 {
+private:
+    enum class EventType {Read, Write, Close};
+    int handler_fd_;
+    EventType event_type_;
+    bool isInEpoll_;
+    // char message_buff_[BUFFER_SIZE];
+    CallBack read_callback_;
+    CallBack write_callback_;
+    CallBack close_callback_;
 public:
     Handler(int fd): handler_fd_(fd) {
         std::cout << "Construct Handler!" << std::endl;
+        isInEpoll_ = false;
     }
 
     ~Handler()
@@ -30,15 +40,9 @@ public:
     int get_handler_fd();
     void handle_event();
     void set_in_Epoll();
-private:
-    enum class EventType {Read, Write, Close};
-    int handler_fd_;
-    EventType event_type_;
-    bool isInEpoll_;
-    // char message_buff_[BUFFER_SIZE];
-    CallBack read_callback_;
-    CallBack write_callback_;
-    CallBack close_callback_;
+    void set_out_Epoll();
+    bool is_in_Epoll();
+    EventType get_handler_event();
 };
 
 #endif
