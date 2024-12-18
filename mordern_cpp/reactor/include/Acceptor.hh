@@ -17,7 +17,7 @@ public:
     void server_bind();
     void server_listen();
     void server_accept();
-    // void set_handler_fd(); tech debt
+
 private:
     sockaddr_in server_addr_;
     int server_fd_;

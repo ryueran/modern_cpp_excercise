@@ -5,17 +5,18 @@
 #include <vector>
 #include <memory>
 #include "Handler.hh"
+#include "Epoller.hh"
 
 class Reactor
 {
 public:
-    Reactor() {};
-    ~Reactor() {};
-    void register_handler(std::shared_ptr<Handler>& ptr_handler);
-    void remove_handler();
+    Reactor(int fd) {ptr_epoller.reset(new Epoller(fd));}
+    ~Reactor() {std::cout << "Reactor destructed!" << std::endl;}
+    void register_handler(Handler* ptr_handler);
+    void remove_handler(Handler* ptr_handler);
     void loop();
 private:
-    std::vector<std::shared_ptr<Handler>> handlers_;
+    std::unique_ptr<Epoller> ptr_epoller;
 };
 
 #endif

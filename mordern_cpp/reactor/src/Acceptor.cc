@@ -42,4 +42,17 @@ void Acceptor::server_listen()
     }
 }
 
-// void Acceptor::server_accept() // tech debt
+void Acceptor::server_accept() // tech debt
+{
+    socklen_t addrlen = sizeof(server_addr_);
+    int new_socket = accept(server_fd_, (struct sockaddr *)&server_addr_, &addrlen);
+    int flags = fcntl(new_socket, F_GETFL, 0);
+    if (flags == -1) {
+        perror("fcntl(F_GETFL)");
+        return;
+    }
+    if (fcntl(new_socket, F_SETFL, flags | O_NONBLOCK) == -1) {
+        perror("fcntl(F_SETFL)");
+        return;
+    }
+}
