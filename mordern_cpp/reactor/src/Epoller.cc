@@ -16,7 +16,7 @@ void Epoller::update(Handler* ptr_handler)
     }
     if(ret < 0)
     {
-        perror("epoll_ctl ADD");
+        perror("epoll_ctl ADD failed!");
     } else {
         std::cout << "epoll event added!" << std::endl;
     }
@@ -24,7 +24,13 @@ void Epoller::update(Handler* ptr_handler)
 
 void Epoller::remove(Handler* ptr_handler)
 {
-
+    ptr_handler->set_out_Epoll();
+    if(epoll_ctl(epfd_, EPOLL_CTL_DEL, ptr_handler->get_handler_fd(), nullptr) < 0)
+    {
+        perror("epoll_ctl DEL failed!");
+    } else {
+        std::cout << "epoll event delezed!" << std::endl;
+    }
 }
 
 std::vector<std::shared_ptr<Handler>> Epoller::poll()
