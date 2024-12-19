@@ -34,9 +34,9 @@ public:
     void enable_write();
     void enable_read();
     void enable_close();
-    void setReadCallback(CallBack& re_callback);
-    void setWriteCallback(CallBack& wr_callback);
-    void setCloseCallback(CallBack& cl_callback);
+    void setReadCallback(CallBack re_callback);
+    void setWriteCallback(CallBack wr_callback);
+    void setCloseCallback(CallBack cl_callback);
     int get_handler_fd();
     void handle_event();
     void set_in_Epoll();

@@ -17,10 +17,12 @@ public:
     void server_bind();
     void server_listen();
     void server_accept();
+    int get_socket_fd();
 
 private:
     sockaddr_in server_addr_;
     int server_fd_;
+    int socket_fd_;
 };
 
 #endif

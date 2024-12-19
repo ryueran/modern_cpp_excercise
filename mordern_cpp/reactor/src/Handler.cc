@@ -15,17 +15,17 @@ void Handler::enable_write()
     event_type_ = EventType::Write;
 }
 
-void Handler::setCloseCallback(CallBack& cl_callback)
+void Handler::setCloseCallback(CallBack cl_callback)
 {
     close_callback_ = cl_callback;
 }
 
-void Handler::setReadCallback(CallBack& re_callback)
+void Handler::setReadCallback(CallBack re_callback)
 {
     read_callback_ = re_callback;
 }
 
-void Handler::setWriteCallback(CallBack& wr_callback)
+void Handler::setWriteCallback(CallBack wr_callback)
 {
     write_callback_ = wr_callback;
 }

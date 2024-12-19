@@ -45,14 +45,19 @@ void Acceptor::server_listen()
 void Acceptor::server_accept() // tech debt
 {
     socklen_t addrlen = sizeof(server_addr_);
-    int new_socket = accept(server_fd_, (struct sockaddr *)&server_addr_, &addrlen);
-    int flags = fcntl(new_socket, F_GETFL, 0);
+    socket_fd_ = accept(server_fd_, (struct sockaddr *)&server_addr_, &addrlen);
+    int flags = fcntl(socket_fd_, F_GETFL, 0);
     if (flags == -1) {
         perror("fcntl(F_GETFL)");
         return;
     }
-    if (fcntl(new_socket, F_SETFL, flags | O_NONBLOCK) == -1) {
+    if (fcntl(socket_fd_, F_SETFL, flags | O_NONBLOCK) == -1) {
         perror("fcntl(F_SETFL)");
         return;
     }
+}
+
+int Acceptor::get_socket_fd()
+{
+    return socket_fd_;
 }
