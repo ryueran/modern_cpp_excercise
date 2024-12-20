@@ -17,6 +17,7 @@ void Reactor::loop()
         std::vector<std::shared_ptr<Handler>> active_channel_list = ptr_epoller->poll();
         for(auto a_ch : active_channel_list)
         {
+            std::cout << "cnm" << std::endl;
             a_ch->handle_event();
         }
     }

@@ -70,5 +70,5 @@ void Handler::handle_event()
 
 bool Handler::is_in_Epoll()
 {
-    return is_in_Epoll;
+    return isInEpoll_;
 }

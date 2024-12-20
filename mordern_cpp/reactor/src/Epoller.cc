@@ -24,21 +24,21 @@ void Epoller::update(Handler* ptr_handler)
 
 void Epoller::remove(Handler* ptr_handler)
 {
-    ptr_handler->set_out_Epoll();
     if(epoll_ctl(epfd_, EPOLL_CTL_DEL, ptr_handler->get_handler_fd(), nullptr) < 0)
     {
+        ptr_handler->set_out_Epoll();
         perror("epoll_ctl DEL failed!");
     } else {
-        std::cout << "epoll event delezed!" << std::endl;
+        std::cout << "epoll event deleted!" << std::endl;
     }
 }
 
 std::vector<std::shared_ptr<Handler>> Epoller::poll()
 {
     std::vector<std::shared_ptr<Handler>> handler_list = {};
-    int n_event = epoll_wait(epfd_, epoll_events_.data(), MAX_EVENTS, -1); // epoll_event consumer
+    int n_event = epoll_wait(epfd_, epoll_events_.data(), epoll_events_.size(), -1); // epoll_event consumer
     if (n_event == -1) {
-        perror("epoll_wait");
+        // perror("epoll_wait");
         return handler_list;
     }
 

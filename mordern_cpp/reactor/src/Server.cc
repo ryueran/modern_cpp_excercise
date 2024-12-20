@@ -11,6 +11,7 @@ void Server::start_server()
     ptr_handler->setReadCallback(std::bind(&Server::read_client, this, std::placeholders::_1));
     ptr_handler->enable_write();
     reactor_.register_handler(ptr_handler);
+    reactor_.loop();
 }
 
 void Server::read_client(int fd)
