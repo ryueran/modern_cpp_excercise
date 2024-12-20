@@ -24,5 +24,6 @@ set(SRC_FILES
 # Create the executable
 add_executable(EchoServer ${SRC_FILES})
 add_executable(EchoClient src/main_client.cc)
+add_executable(server_simple src/main_server_simple.cc)
 # Link libraries (if needed, e.g., pthread for multithreading)
 # target_link_libraries(EchoServer pthread)

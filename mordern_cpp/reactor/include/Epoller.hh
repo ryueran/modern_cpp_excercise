@@ -12,13 +12,15 @@ class Handler;
 class Epoller
 {
 public:
-    Epoller(int fd): epfd_(fd) {
+    Epoller(): epoll_events_(32) {
         std::cout << "Epoller constructed!" << std::endl;
+        epfd_ = epoll_create1(EPOLL_CLOEXEC);
     }
 
     ~Epoller()
     {
         std::cout << "Epoller destructed!" << std::endl;
+        close(epfd_);
     }
 
     void update(Handler* ptr_handler);
@@ -27,7 +29,7 @@ public:
 
 private:
     int epfd_;
-    std::vector<epoll_event> epoll_events_; 
+    std::vector<::epoll_event> epoll_events_; 
 };
 
 #endif

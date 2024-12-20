@@ -36,9 +36,11 @@ void Epoller::remove(Handler* ptr_handler)
 std::vector<std::shared_ptr<Handler>> Epoller::poll()
 {
     std::vector<std::shared_ptr<Handler>> handler_list = {};
+    struct epoll_event ev, events[MAX_EVENTS];
+    // int n_event = epoll_wait(epfd_, events, MAX_EVENTS, -1); // epoll_event consumer
     int n_event = epoll_wait(epfd_, epoll_events_.data(), epoll_events_.size(), -1); // epoll_event consumer
     if (n_event == -1) {
-        // perror("epoll_wait");
+        perror("epoll_wait");
         return handler_list;
     }
 
