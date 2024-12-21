@@ -14,7 +14,8 @@ void Reactor::loop()
 {
     while(1)
     {
-        std::vector<std::shared_ptr<Handler>> active_channel_list = ptr_epoller->poll();
+        // std::vector<std::shared_ptr<Handler>> active_channel_list = ptr_epoller->poll();
+        std::vector<Handler *> active_channel_list = ptr_epoller->poll();
         for(auto a_ch : active_channel_list)
         {
             a_ch->handle_event();

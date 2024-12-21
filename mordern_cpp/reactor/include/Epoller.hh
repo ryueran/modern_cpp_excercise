@@ -25,7 +25,7 @@ public:
 
     void update(Handler* ptr_handler);
     void remove(Handler* ptr_handler);
-    std::vector<std::shared_ptr<Handler>> poll();
+    std::vector<Handler *> poll();
 
 private:
     int epfd_;

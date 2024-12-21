@@ -10,7 +10,7 @@ void Server::start_server()
     std::shared_ptr<Handler> ptr_handler = std::make_shared<Handler>(acceptor_.get_socket_fd());
     handlers_[acceptor_.get_socket_fd()] = ptr_handler;
     ptr_handler->setReadCallback(std::bind(&Server::read_client, this, std::placeholders::_1));
-    // ptr_handler->enable_read();
+    ptr_handler->enable_read();
     reactor_.register_handler(ptr_handler.get());
     reactor_.loop();
 }
@@ -21,7 +21,7 @@ void Server::read_client(int fd)
 
     auto ptr_handler = handlers_[acceptor_.get_socket_fd()];
     ptr_handler->setWriteCallback(std::bind(&Server::write_client, this, std::placeholders::_1));
-    // ptr_handler->enable_write();
+    ptr_handler->enable_write();
     reactor_.register_handler(ptr_handler.get());
 }
 

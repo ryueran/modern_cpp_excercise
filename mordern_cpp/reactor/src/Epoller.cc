@@ -4,7 +4,14 @@
 void Epoller::update(Handler* ptr_handler)
 {
     epoll_event event;
-    event.events = (ptr_handler->get_handler_event() == EventType::Read) ? EPOLLIN | EPOLLET : EPOLLOUT;
+    //event.events = (ptr_handler->get_handler_event() == EventType::Read) ? EPOLLIN | EPOLLET : EPOLLOUT;
+    if(ptr_handler->get_handler_event() == EventType::Read)
+    {
+        event.events = EPOLLIN | EPOLLET;
+    } else {
+        event.events = EPOLLOUT;
+    }
+
     event.data.ptr = ptr_handler;
     int ret;
     if(ptr_handler->is_in_Epoll())
@@ -33,9 +40,9 @@ void Epoller::remove(Handler* ptr_handler)
     }
 }
 
-std::vector<std::shared_ptr<Handler>> Epoller::poll()
+std::vector<Handler *> Epoller::poll()
 {
-    std::vector<std::shared_ptr<Handler>> handler_list = {};
+    std::vector<Handler *> handler_list = {};
     
     int n_event = epoll_wait(epfd_, epoll_events_.data(), epoll_events_.size(), -1); // epoll_event consumer
     if (n_event == -1) {
@@ -45,19 +52,19 @@ std::vector<std::shared_ptr<Handler>> Epoller::poll()
 
     for (int i = 0; i < n_event; ++i) {
         auto& event = epoll_events_[i];
-        std::shared_ptr<Handler> handler_ptr(static_cast<Handler*>(event.data.ptr));
-
+        // std::shared_ptr<Handler> handler_ptr(static_cast<Handler*>(event.data.ptr));
+        Handler* handler_ptr = static_cast<Handler*>(event.data.ptr);
         if (handler_ptr == nullptr) {
             std::cout << "Error: handler_ptr is nullptr!" << std::endl;
             continue;
         }
 
-        if (event.events & EPOLLIN) {
-            handler_ptr->enable_read();
-        }
-        if (event.events & EPOLLOUT) {
-            handler_ptr->enable_write();
-        }
+        // if (event.events & EPOLLIN) {
+        //     handler_ptr->enable_read();
+        // }
+        // if (event.events & EPOLLOUT) {
+        //     handler_ptr->enable_write();
+        // }
 
         handler_list.push_back(handler_ptr);
     }
