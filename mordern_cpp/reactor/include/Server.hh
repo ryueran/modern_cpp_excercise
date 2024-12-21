@@ -2,6 +2,7 @@
 #define SERVER_HH
 
 #include <iostream>
+#include <map>
 #include "Acceptor.hh"
 #include "Handler.hh"
 #include "Reactor.hh"
@@ -26,6 +27,7 @@ private:
     Acceptor acceptor_;
     Reactor reactor_;
     char message_buffer[1024];
+    std::map<int, std::shared_ptr<Handler>> handlers_;
     int fd_;
 };
 

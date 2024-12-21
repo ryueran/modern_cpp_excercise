@@ -8,10 +8,11 @@
 
 using CallBack = std::function<void(int)>;
 
+enum class EventType {Read, Write, Close};
+
 class Handler
 {
 private:
-    enum class EventType {Read, Write, Close};
     int handler_fd_;
     EventType event_type_;
     bool isInEpoll_;

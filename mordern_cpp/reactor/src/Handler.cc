@@ -45,7 +45,7 @@ void Handler::set_out_Epoll()
     isInEpoll_ = false;
 }
 
-Handler::EventType Handler::get_handler_event()
+EventType Handler::get_handler_event()
 {
     return event_type_;
 }
