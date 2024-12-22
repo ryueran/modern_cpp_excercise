@@ -46,6 +46,7 @@ void Acceptor::server_accept(int server_fd) // tech debt
 {
     socklen_t addrlen = sizeof(server_addr_);
     socket_fd_ = accept(server_fd, (struct sockaddr *)&server_addr_, &addrlen);
+    std::cout << "New Socket fd: " << socket_fd_ << std::endl; // The problem happens here, the new connection that calls the accept will overload the old acceüt of connection
     int flags = fcntl(server_fd, F_GETFL, 0);
     if (flags == -1) {
         perror("fcntl(F_GETFL)");
