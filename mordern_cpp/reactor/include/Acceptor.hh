@@ -15,8 +15,9 @@ public:
     ~Acceptor();
     void server_bind();
     void server_listen();
-    void server_accept();
+    void server_accept(int server_fd);
     int get_socket_fd();
+    int get_server_fd();
 
 private:
     sockaddr_in server_addr_;

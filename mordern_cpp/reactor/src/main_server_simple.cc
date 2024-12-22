@@ -121,6 +121,7 @@ int main() {
                 if (n > 0) {
                     // Echo data back to the client
                     write(client_fd, buffer, n);
+                    printf("Write client fd: %d\n", client_fd);
                 } else if (n == 0) {
                     // Connection closed
                     printf("Connection closed: %d\n", client_fd);

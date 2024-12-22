@@ -21,6 +21,7 @@ public:
         // delete[] message_buffer;
     }
     void start_server(); // Acceptor.bind, listen, accept, handler->register(std::bind(read_client, this, _1))
+    void accept(int server_fd);
     void read_client(int fd); // handler->register(std::bind(write_client, this, _1))
     void write_client(int fd);
 private:

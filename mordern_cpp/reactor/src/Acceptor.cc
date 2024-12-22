@@ -42,16 +42,16 @@ void Acceptor::server_listen()
     }
 }
 
-void Acceptor::server_accept() // tech debt
+void Acceptor::server_accept(int server_fd) // tech debt
 {
     socklen_t addrlen = sizeof(server_addr_);
-    socket_fd_ = accept(server_fd_, (struct sockaddr *)&server_addr_, &addrlen);
-    int flags = fcntl(socket_fd_, F_GETFL, 0);
+    socket_fd_ = accept(server_fd, (struct sockaddr *)&server_addr_, &addrlen);
+    int flags = fcntl(server_fd, F_GETFL, 0);
     if (flags == -1) {
         perror("fcntl(F_GETFL)");
         return;
     }
-    if (fcntl(socket_fd_, F_SETFL, flags | O_NONBLOCK) == -1) {
+    if (fcntl(server_fd, F_SETFL, flags | O_NONBLOCK) == -1) {
         perror("fcntl(F_SETFL)");
         return;
     }
@@ -60,4 +60,9 @@ void Acceptor::server_accept() // tech debt
 int Acceptor::get_socket_fd()
 {
     return socket_fd_;
+}
+
+int Acceptor::get_server_fd()
+{
+    return server_fd_;
 }
