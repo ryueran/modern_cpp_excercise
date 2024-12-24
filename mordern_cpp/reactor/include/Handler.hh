@@ -44,6 +44,7 @@ public:
     void set_out_Epoll();
     bool is_in_Epoll();
     EventType get_handler_event();
+    char message_buffer[1024];
 };
 
 #endif

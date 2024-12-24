@@ -27,29 +27,30 @@ void Server::accept(int server_fd)
     reactor_.register_handler(ptr_handler.get());
 }
 
-void Server::read_client(int fd)
-{
-    ssize_t n = read(fd, message_buffer, sizeof(message_buffer));
-    auto ptr_handler = handlers_[acceptor_.get_socket_fd()];
-    
+void Server::read_client(int fd) {
+    auto ptr_handler = handlers_[fd];
+    ssize_t n = read(fd, ptr_handler->message_buffer, sizeof(ptr_handler->message_buffer) - 1);
 
-    if(n > 0)
-    {
-        message_buffer[n] = 0;
-        
+    if (n > 0) {
+        ptr_handler->message_buffer[n] = '\0'; // Null-terminate the buffer
+
         ptr_handler->setWriteCallback(std::bind(&Server::write_client, this, std::placeholders::_1));
         ptr_handler->enable_write();
         reactor_.register_handler(ptr_handler.get());
-    }
-    else if(n == 0){
+    } else if (n == 0) {
+        // Client closed the connection
         printf("close fd\n");
-        ::close(acceptor_.get_socket_fd());
-        reactor_.remove_handler(ptr_handler.get());
-        handlers_.erase(acceptor_.get_socket_fd());
-    }
-    else{
         ::close(fd);
-        printf("read error\n");
+        reactor_.remove_handler(ptr_handler.get());
+        handlers_.erase(fd);
+    } else {
+        // Handle read error
+        if (errno == EAGAIN || errno == EWOULDBLOCK) {
+            // No data available, wait for the next event
+            return;
+        }
+        perror("read error"); // Print the specific error
+        ::close(fd);
         reactor_.remove_handler(ptr_handler.get());
         handlers_.erase(fd);
     }
@@ -57,9 +58,9 @@ void Server::read_client(int fd)
 
 void Server::write_client(int fd)
 {
-    int nbytes = write(fd, message_buffer, 3);
-    // int nbytes = 1;
     auto ptr_handler = handlers_[fd];
+    int nbytes = write(fd, ptr_handler->message_buffer, 3);
+    // int nbytes = 1;
     if(nbytes > 0)
     {
         ptr_handler->setReadCallback(std::bind(&Server::read_client, this, std::placeholders::_1));

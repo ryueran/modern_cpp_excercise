@@ -25,7 +25,7 @@ void Epoller::update(Handler* ptr_handler)
     {
         perror("epoll_ctl ADD failed!");
     } else {
-        std::cout << "epoll event added!" << std::endl;
+        std::cout << "epoll event added! " << ptr_handler->get_handler_fd()  << " " << int(ptr_handler->get_handler_event()) << std::endl;
     }
 }
 
