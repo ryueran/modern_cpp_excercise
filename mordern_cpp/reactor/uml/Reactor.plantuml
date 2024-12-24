@@ -1,7 +1,9 @@
 @startuml
-class RectangleFontColor{
-    register_handler()
-    remove_handler()
-    loop()
+class Reactor{
+    - unique_ptr<Epoller> ptr_epoller
+    - int epoll_fd_
+    + void register_handler(Handler* ptr_handler)
+    + void remove_handler(Handler* ptr_handler)
+    + void loop()
 }
 @enduml

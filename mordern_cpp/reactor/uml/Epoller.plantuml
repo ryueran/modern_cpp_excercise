@@ -1,8 +1,10 @@
 @startuml
 class Epoller
 {
-    update()
-    remove()
-    poll()
+    - int epfd_
+    - vector<epoll_event> epoll_events_
+    + void update(Handler* ptr_handler)
+    + void remove(Handler* ptr_handler)
+    + vector<Handler *> poll()
 }
 @enduml

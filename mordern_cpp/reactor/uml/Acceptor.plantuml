@@ -1,9 +1,13 @@
 @startuml
 class Acceptor
 {
-    socket
-    bind()
-    linsten()
-    accept()
+    - sockaddr_in server_addr_
+    - int server_fd_
+    - int socket_fd_
+    + void server_bind()
+    + void server_listen()
+    + void server_accept(int server_fd)
+    + int get_socket_fd()
+    + int get_server_fd()
 }
 @enduml

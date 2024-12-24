@@ -1,13 +1,9 @@
 @startuml
-Server -> Acceptor: start()
-Acceptor -> Acceptor: constructor(epoll_create fd)
-Acceptor -> Handler: set_handler_fd
-Handler -> Handler: set_fd()
-Acceptor -> Acceptor: bind()
-Acceptor -> Handler: set event as EPOLLIN {enableRead}
-Acceptor -> Handler: {set bind as readcallback}
-Handler -> Handler: setReadCallBack()
-Acceptor -> Reactor: register_handler()
-Reactor -> Epoller: update() {epoll_ctl}, read event type from handler
-
+Server -> Acceptor: start_server()
+Acceptor -> Acceptor: server_bind()
+Acceptor -> Acceptor: server_listen()
+Server -> Handler: Create new Handler object ptr_handler with server fd
+Handler -> Handler: setReadCallback as Server::accept
+Handler -> Handler: enable_read()
+Server -> Reactor: register_handler(ptr_handler)
 @enduml

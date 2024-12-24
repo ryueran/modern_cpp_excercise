@@ -1,11 +1,23 @@
 @startuml
 class Handler
 {
-enable_write()
-enable_read()
-enable_close()
-setReadCallBack()
-setWriteCallBack()
-setCloseCallBack()
+    - int handler_fd_
+    - EventType event_type_
+    - bool isInEpoll_
+    - function<void(int)> read_callback_
+    - function<void(int)> write_callback_
+
+    + void enable_write()
+    + void enable_read()
+    + void setReadCallBack(function<void(int)> re_callback)
+    + void setWriteCallBack(function<void(int)> wr_callback)
+
+    + int get_handler_fd()
+    + void handle_event()
+    + void set_in_Epoll()
+    + void void set_out_Epoll()
+    + bool is_in_Epoll()
+    + EventType get_handler_event()
+    + char message_buffer[max_size]
 }
 @enduml
