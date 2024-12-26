@@ -4,6 +4,31 @@ Acceptor -> Acceptor: server_bind()
 Acceptor -> Acceptor: server_listen()
 Server -> Handler: Create new Handler object ptr_handler with server fd
 Handler -> Handler: setReadCallback as Server::accept
+Handler -> Server: <execute>
 Handler -> Handler: enable_read()
 Server -> Reactor: register_handler(ptr_handler)
+Reactor -> Epoller: update(ptr_handler)
+Epoller -> Epoller: Add EPOLLIN as EPOLL_CTL_ADD through epoll_ctl (as producer)
+Server -> Handler: Create new Handler object ptr_handler with socket fd
+Handler -> Handler: setReadCallback as Server::read_client
+Handler -> Server: <execute>
+Handler -> Handler: enable_read()
+Server -> Reactor: register_handler(ptr_handler)
+Reactor -> Epoller: update(ptr_handler)
+Epoller -> Epoller: Add EPOLLIN as EPOLL_CTL_ADD through epoll_ctl (as producer)
+Server -> Handler: Create new Handler object ptr_handler with server fd
+Handler -> Handler: setReadCallback as Server::write_client
+Handler -> Server: <execute>
+Handler -> Handler: enable_write()
+Server -> Reactor: register_handler(ptr_handler)
+Reactor -> Epoller: update(ptr_handler)
+Epoller -> Epoller: Add EPOLLOUT as EPOLL_CTL_MOD through epoll_ctl (as producer)
+Server -> Reactor: loop()
+Reactor -> Epoller: epoll_wait() (as consumer)
+Reactor -> Handler: handler_event()
+alt EPOLLIN case
+    Handler -> Handler: read_callback_
+else EPOLLOUT case 
+    Handler -> Handler: write_callback_
+end
 @enduml
