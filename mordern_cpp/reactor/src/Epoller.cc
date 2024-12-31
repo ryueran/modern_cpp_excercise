@@ -4,13 +4,7 @@
 void Epoller::update(Handler* ptr_handler)
 {
     epoll_event event;
-    //event.events = (ptr_handler->get_handler_event() == EventType::Read) ? EPOLLIN | EPOLLET : EPOLLOUT;
-    if(ptr_handler->get_handler_event() == EventType::Read)
-    {
-        event.events = EPOLLIN | EPOLLET;
-    } else {
-        event.events = EPOLLOUT;
-    }
+    event.events = (ptr_handler->get_handler_event() == EventType::Read) ? EPOLLIN | EPOLLET : EPOLLOUT;
 
     event.data.ptr = ptr_handler;
     int ret;
