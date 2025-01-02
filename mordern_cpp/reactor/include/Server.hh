@@ -26,11 +26,14 @@ public:
     void write_client(int fd);
 private:
     void close_client(int fd) {::close(fd);}
+    void handle_file_download(int fd, const std::string& file_path);
+    void send_response(int fd, const std::string& message, int status_code);
     Acceptor acceptor_;
     Reactor reactor_;
     char message_buffer[1024];
     std::map<int, std::shared_ptr<Handler>> handlers_;
     int fd_;
+    std::string root_directory;
 };
 
 #endif
