@@ -25,6 +25,7 @@ public:
     void read_client(int fd); // handler->register(std::bind(write_client, this, _1))
     void write_client(int fd);
 private:
+    void close_client(int fd) {::close(fd);}
     Acceptor acceptor_;
     Reactor reactor_;
     char message_buffer[1024];

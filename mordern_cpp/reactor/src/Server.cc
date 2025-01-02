@@ -32,45 +32,56 @@ void Server::read_client(int fd) {
     ssize_t n = read(fd, ptr_handler->message_buffer, sizeof(ptr_handler->message_buffer) - 1);
 
     if (n > 0) {
-        ptr_handler->message_buffer[n] = '\0'; // Null-terminate the buffer
-
-        ptr_handler->setWriteCallback(std::bind(&Server::write_client, this, std::placeholders::_1));
-        ptr_handler->enable_write();
-        reactor_.register_handler(ptr_handler.get());
+        ptr_handler->message_buffer[n] = '\0'; // 确保字符串终止符
+        write_client(fd); // 写入响应
     } else if (n == 0) {
-        // Client closed the connection
-        printf("close fd\n");
-        ::close(fd);
+        // 客户端关闭连接
+        close_client(fd);
         reactor_.remove_handler(ptr_handler.get());
         handlers_.erase(fd);
     } else {
-        // Handle read error
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
-            // No data available, wait for the next event
-            return;
+            return; // 等待下次事件
         }
-        perror("read error"); // Print the specific error
-        ::close(fd);
+        perror("read error");
+        close_client(fd);
         reactor_.remove_handler(ptr_handler.get());
         handlers_.erase(fd);
     }
 }
 
-void Server::write_client(int fd)
-{
+void Server::write_client(int fd) {
     auto ptr_handler = handlers_[fd];
-    int nbytes = write(fd, ptr_handler->message_buffer, 3);
-    // int nbytes = 1;
-    if(nbytes > 0)
-    {
-        ptr_handler->setReadCallback(std::bind(&Server::read_client, this, std::placeholders::_1));
-        ptr_handler->enable_read();
-        reactor_.register_handler(ptr_handler.get());
+    std::string response = 
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/html\r\n"
+        "Content-Length: 13\r\n"
+        "Connection: close\r\n"
+        "\r\n"
+        "Hello World";
+
+    const char* data = response.c_str();
+    size_t total_bytes = response.size();
+    ssize_t bytes_written = 0;
+
+    while (bytes_written < total_bytes) {
+        ssize_t n = write(fd, data + bytes_written, total_bytes - bytes_written);
+        if (n > 0) {
+            bytes_written += n;
+        } else if (n == -1 && (errno == EAGAIN || errno == EWOULDBLOCK)) {
+            break; // 等待下次事件
+        } else {
+            perror("write error");
+            close_client(fd);
+            reactor_.remove_handler(ptr_handler.get());
+            handlers_.erase(fd);
+            return;
+        }
     }
-    else {
-        printf("write error\n");
-        ::close(fd);
-        reactor_.register_handler(ptr_handler.get());
+
+    if (bytes_written == total_bytes) {
+        reactor_.remove_handler(ptr_handler.get());
+        close_client(fd);
         handlers_.erase(fd);
     }
 }

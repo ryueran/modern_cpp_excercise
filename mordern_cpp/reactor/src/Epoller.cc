@@ -27,9 +27,9 @@ void Epoller::remove(Handler* ptr_handler)
 {
     if(epoll_ctl(epfd_, EPOLL_CTL_DEL, ptr_handler->get_handler_fd(), nullptr) < 0)
     {
-        ptr_handler->set_out_Epoll();
         perror("epoll_ctl DEL failed!");
     } else {
+        ptr_handler->set_out_Epoll();
         std::cout << "epoll event deleted!" << std::endl;
     }
 }
