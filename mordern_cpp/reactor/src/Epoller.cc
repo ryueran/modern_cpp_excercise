@@ -1,5 +1,6 @@
 #include "Epoller.hh"
 #include "Handler.hh"
+#include "HandlerContainer.hh"
 
 void Epoller::update(Handler* ptr_handler)
 {
@@ -34,9 +35,9 @@ void Epoller::remove(Handler* ptr_handler)
     }
 }
 
-std::vector<Handler *> Epoller::poll()
+HandlerContainer<Handler *> Epoller::poll()
 {
-    std::vector<Handler *> handler_list = {};
+    HandlerContainer<Handler *> handler_list;
     
     int n_event = epoll_wait(epfd_, epoll_events_.data(), epoll_events_.size(), -1); // epoll_event consumer
     if (n_event == -1) {
@@ -60,7 +61,7 @@ std::vector<Handler *> Epoller::poll()
         //     handler_ptr->enable_write();
         // }
 
-        handler_list.push_back(handler_ptr);
+        handler_list.add(handler_ptr);
     }
     return handler_list;
 }

@@ -1,4 +1,5 @@
 #include "Reactor.hh"
+#include "HandlerContainer.hh"
 
 void Reactor::register_handler(Handler* ptr_handler)
 {
@@ -14,8 +15,8 @@ void Reactor::loop()
 {
     while(1)
     {
-        std::vector<Handler *> active_channel_list = ptr_epoller->poll();
-        for(auto a_ch : active_channel_list)
+        HandlerContainer<Handler *> active_channel_list = ptr_epoller->poll();
+        for(auto a_ch : active_channel_list.list)
         {
             a_ch->handle_event();
         }

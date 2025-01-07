@@ -5,6 +5,7 @@
 #include <memory>
 #include <vector>
 #include <sys/epoll.h>
+#include "HandlerContainer.hh"
 
 #define MAX_EVENTS 20
 
@@ -25,7 +26,7 @@ public:
 
     void update(Handler* ptr_handler);
     void remove(Handler* ptr_handler);
-    std::vector<Handler *> poll();
+    HandlerContainer<Handler *> poll();
 
 private:
     int epfd_;
