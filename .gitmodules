@@ -1,3 +1,6 @@
 [submodule "libs/libosmium"]
 	path = libs/libosmium
 	url = https://github.com/osmcode/libosmium.git
+[submodule "libs/external/mapnik"]
+	path = libs/external/mapnik
+	url = https://github.com/mapnik/mapnik.git
