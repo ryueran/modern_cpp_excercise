@@ -25,7 +25,7 @@ void downloadOSMData(const std::string& url, const std::string& output_file) {
 
 int main() {
     std::string url = "https://download.geofabrik.de/europe/germany/berlin-250107.osm.pbf";
-    std::string output_file = "download/loadberlin.osm.pbf";
+    std::string output_file = "berlin.osm.pbf";
     downloadOSMData(url, output_file);
     return 0;
 }

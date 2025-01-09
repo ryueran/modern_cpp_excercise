@@ -31,4 +31,7 @@ Notice:
       }
     ]
   }
-  
+
+Compile option:
+
+1. cmake -DLIBOSMIUM_DIR=/home/muzi/Documents/exer_repo_cpp/libs/libosmium .., be careful, you have to choose your own libosmium path to replace "/home/muzi/Documents/exer_repo_cpp/libs/libosmium"
