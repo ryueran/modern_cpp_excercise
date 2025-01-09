@@ -5,6 +5,7 @@
 #include <memory>
 #include <vector>
 #include <sys/epoll.h>
+#include <unistd.h>
 #include "HandlerContainer.hh"
 
 #define MAX_EVENTS 20
