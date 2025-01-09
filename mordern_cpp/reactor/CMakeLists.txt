@@ -24,6 +24,14 @@ find_package(Boost REQUIRED)
 find_package(Threads REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(Protobuf REQUIRED)
+find_package(BZip2 REQUIRED)
+find_package(EXPAT REQUIRED)
+
+# 添加 Expat 的头文件路径
+include_directories(${EXPAT_INCLUDE_DIRS})
+
+# 添加 bzip2 的头文件路径
+include_directories(${BZIP2_INCLUDE_DIR})
 
 if(NOT TARGET Protobuf::Protobuf)
     add_library(Protobuf::Protobuf INTERFACE IMPORTED)
@@ -51,4 +59,4 @@ add_executable(osm_parser utility/openstreetmap/src/parse_osm.cc)
 # Link libraries (if needed, e.g., pthread for multithreading)
 # target_link_libraries(EchoServer pthread)
 target_link_libraries(osm_downloader CURL::libcurl)
-target_link_libraries(osm_parser ${Boost_LIBRARIES} Threads::Threads ZLIB::ZLIB Protobuf::Protobuf)
+target_link_libraries(osm_parser ${EXPAT_LIBRARIES} ${Boost_LIBRARIES} ${BZIP2_LIBRARIES} Threads::Threads ZLIB::ZLIB Protobuf::Protobuf)
