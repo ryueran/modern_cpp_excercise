@@ -5,8 +5,9 @@ cmake_minimum_required(VERSION 3.10)
 project(EchoServer)
 
 # Set the C++ standard
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_BUILD_TYPE Debug)
 # 定义变量以指定 libosmium 的路径，默认值为空
 set(LIBOSMIUM_DIR "" CACHE PATH "Path to libosmium directory")
 
@@ -17,6 +18,10 @@ endif()
 
 # 定义变量以指定 libmapnik 的路径，默认值为空
 set(LIBMAPNIK_DIR "" CACHE PATH "Path to libmapnik directory")
+
+# 定义变量以指定 MAPNIK_USE_PROJ 的路径
+add_definitions(-DMAPNIK_USE_PROJ)
+set(MAPNIK_USE_PROJ TRUE CACHE BOOL "Enable PROJ support in Mapnik")
 
 # 如果没有设置路径，则提示错误
 if(NOT LIBMAPNIK_DIR)
@@ -53,6 +58,13 @@ find_package(JPEG REQUIRED)
 # 查找 TIFF 库
 find_package(TIFF REQUIRED)
 
+# 查找 PROJ 库
+# 手动指定 PROJ 的路径
+# 设置 PROJ_LIB 环境变量
+set(ENV{PROJ_LIB} "/usr/local/share/proj")
+set(PROJ_INCLUDE_DIR "/usr/local/include")
+set(PROJ_LIBRARY "/usr/local/lib/libproj.so")
+
 # 查找 WebP 库
 find_library(WEBP_LIB webp PATHS /usr/lib /usr/local/lib)
 find_path(WEBP_INCLUDE_DIR webp/decode.h PATHS /usr/include /usr/local/include)
@@ -88,8 +100,6 @@ set(SRC_FILES
     src/Handler.cc
     src/Reactor.cc
     src/Server.cc
-    ${MAPNIK_SOURCES}
-    ${AGG_SOURCES}
 )
 
 # Create the executable
@@ -98,8 +108,18 @@ add_executable(EchoClient src/main_client.cc)
 add_executable(server_simple src/main_server_simple.cc)
 add_executable(osm_downloader utility/openstreetmap/src/download_osm.cc)
 add_executable(osm_parser utility/openstreetmap/src/parse_osm.cc)
+add_executable(mapnik_exam utility/openstreetmap/src/mapnik_exam.cc ${MAPNIK_SOURCES} ${AGG_SOURCES})
 # Link libraries (if needed, e.g., pthread for multithreading)
-target_link_libraries(EchoServer pthread ${FREETYPE_LIBRARIES} 
+target_link_libraries(EchoServer pthread)
+target_link_libraries(osm_downloader CURL::libcurl)
+target_link_libraries(osm_parser 
+                        ${FREETYPE_LIBRARIES} 
+                        ${EXPAT_LIBRARIES} 
+                        ${Boost_LIBRARIES} 
+                        ${BZIP2_LIBRARIES}
+                        Threads::Threads ZLIB::ZLIB Protobuf::Protobuf)
+target_link_libraries(mapnik_exam pthread 
+                        ${FREETYPE_LIBRARIES} 
                         ${EXPAT_LIBRARIES} 
                         ${Boost_LIBRARIES} 
                         ${BZIP2_LIBRARIES}
@@ -113,11 +133,6 @@ target_link_libraries(EchoServer pthread ${FREETYPE_LIBRARIES}
                         ICU::i18n
                         Boost::regex
                         JPEG::JPEG
-                        TIFF::TIFF)
-target_link_libraries(osm_downloader CURL::libcurl)
-target_link_libraries(osm_parser 
-                        ${FREETYPE_LIBRARIES} 
-                        ${EXPAT_LIBRARIES} 
-                        ${Boost_LIBRARIES} 
-                        ${BZIP2_LIBRARIES} 
-                        Threads::Threads ZLIB::ZLIB Protobuf::Protobuf)
+                        TIFF::TIFF
+                        CURL::libcurl
+                        ${PROJ_LIBRARY})

@@ -36,4 +36,6 @@ Compile option:
 
 1. cmake -DLIBOSMIUM_DIR=/home/muzi/Documents/exer_repo_cpp/libs/libosmium .., be careful, you have to choose your own libosmium path to replace "/home/muzi/Documents/exer_repo_cpp/libs/libosmium"
 
-2. cmake -DLIBOSMIUM_DIR=/home/muzi/Documents/exer_repo_cpp/libs/libosmium -DLIBMAPNIK_DIR=/home/muzi/Documents/exer_repo_cpp/libs/external/mapnik .., be careful, you have to choose your own libosmium path to replace "/home/muzi/Documents/exer_repo_cpp/libs/external/mapnik/include"
+2. cmake -DLIBOSMIUM_DIR=/home/muzi/Documents/exer_repo_cpp/libs/libosmium -DLIBMAPNIK_DIR=/home/muzi/Documents/exer_repo_cpp/libs/external/mapnik -DMAPNIK_USE_PROJ=ON .., be careful, you have to choose your own libosmium path to replace "/home/muzi/Documents/exer_repo_cpp/libs/external/mapnik/include"
+
+3. Solve the struct conflict by changing the libproj version to 7.2.1 in /usr/local/
