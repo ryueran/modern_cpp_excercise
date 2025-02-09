@@ -14,13 +14,12 @@ class Handler
 {
 private:
     int handler_fd_;
-    EventType event_type_;
     bool isInEpoll_;
     // char message_buff_[BUFFER_SIZE];
-    CallBack read_callback_;
-    CallBack write_callback_;
-    CallBack close_callback_;
+    CallBack callback_;
+
 public:
+    EventType event_type_;
     Handler(int fd): handler_fd_(fd) {
         std::cout << "Construct Handler!" << std::endl;
         isInEpoll_ = false;
@@ -32,12 +31,7 @@ public:
         // delete message_buff_;
     }
 
-    void enable_write();
-    void enable_read();
-    void enable_close();
-    void setReadCallback(CallBack re_callback);
-    void setWriteCallback(CallBack wr_callback);
-    void setCloseCallback(CallBack cl_callback);
+    void setCallback(CallBack callback);
     int get_handler_fd();
     void handle_event();
     void set_in_Epoll();

@@ -53,14 +53,6 @@ HandlerContainer<Handler *> Epoller::poll()
             std::cout << "Error: handler_ptr is nullptr!" << std::endl;
             continue;
         }
-
-        // if (event.events & EPOLLIN) {
-        //     handler_ptr->enable_read();
-        // }
-        // if (event.events & EPOLLOUT) {
-        //     handler_ptr->enable_write();
-        // }
-
         handler_list.add(handler_ptr);
     }
     return handler_list;

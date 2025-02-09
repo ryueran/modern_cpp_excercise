@@ -4,7 +4,8 @@
 #include <iostream>
 #include <map>
 #include "Acceptor.hh"
-#include "Handler.hh"
+#include "ReadHandler.hh"
+#include "WriteHandler.hh"
 #include "Reactor.hh"
 
 class Server

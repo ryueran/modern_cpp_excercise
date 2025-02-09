@@ -1,33 +1,8 @@
 #include "Handler.hh"
 
-void Handler::enable_close()
+void Handler::setCallback(CallBack callback)
 {
-    event_type_ = EventType::Close;
-}
-
-void Handler::enable_read()
-{
-    event_type_ = EventType::Read;
-}
-
-void Handler::enable_write()
-{
-    event_type_ = EventType::Write;
-}
-
-void Handler::setCloseCallback(CallBack cl_callback)
-{
-    close_callback_ = cl_callback;
-}
-
-void Handler::setReadCallback(CallBack re_callback)
-{
-    read_callback_ = re_callback;
-}
-
-void Handler::setWriteCallback(CallBack wr_callback)
-{
-    write_callback_ = wr_callback;
+    callback_ = callback;
 }
 
 int Handler::get_handler_fd()
@@ -52,20 +27,7 @@ EventType Handler::get_handler_event()
 
 void Handler::handle_event()
 {
-    if(event_type_ == EventType::Write)
-    {
-        write_callback_(handler_fd_);
-    }
-
-    if(event_type_ == EventType::Read)
-    {
-        read_callback_(handler_fd_);
-    }
-
-    if(event_type_ == EventType::Close)
-    {
-        close_callback_(handler_fd_);
-    }
+    callback_(handler_fd_);
 }
 
 bool Handler::is_in_Epoll()

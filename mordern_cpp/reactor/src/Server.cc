@@ -25,10 +25,9 @@ void Server::start_server()
     std::cout << "Root directory set to: " << root_directory << std::endl;
     // acceptor_.server_accept();
     // handler->register(std::bind(read_client, this, _1))
-    std::shared_ptr<Handler> ptr_handler = std::make_shared<Handler>(acceptor_.get_server_fd());
+    std::shared_ptr<ReadHandler> ptr_handler = std::make_shared<ReadHandler>(acceptor_.get_server_fd());
     handlers_[acceptor_.get_server_fd()] = ptr_handler;
-    ptr_handler->setReadCallback(std::bind(&Server::accept, this, std::placeholders::_1));
-    ptr_handler->enable_read();
+    ptr_handler->setCallback(std::bind(&Server::accept, this, std::placeholders::_1));
     reactor_.register_handler(ptr_handler.get());
     reactor_.loop();
 }
@@ -37,10 +36,9 @@ void Server::accept(int server_fd)
 {
     acceptor_.server_accept(server_fd);
 
-    std::shared_ptr<Handler> ptr_handler = std::make_shared<Handler>(acceptor_.get_socket_fd());
+    std::shared_ptr<ReadHandler> ptr_handler = std::make_shared<ReadHandler>(acceptor_.get_socket_fd());
     handlers_[acceptor_.get_socket_fd()] = ptr_handler;
-    ptr_handler->setReadCallback(std::bind(&Server::read_client, this, std::placeholders::_1));
-    ptr_handler->enable_read();
+    ptr_handler->setCallback(std::bind(&Server::read_client, this, std::placeholders::_1));
     reactor_.register_handler(ptr_handler.get());
 }
 

@@ -106,33 +106,33 @@ set(SRC_FILES
 add_executable(EchoServer ${SRC_FILES})
 add_executable(EchoClient src/main_client.cc)
 add_executable(server_simple src/main_server_simple.cc)
-add_executable(osm_downloader utility/openstreetmap/src/download_osm.cc)
-add_executable(osm_parser utility/openstreetmap/src/parse_osm.cc)
-add_executable(mapnik_exam utility/openstreetmap/src/mapnik_exam.cc ${MAPNIK_SOURCES} ${AGG_SOURCES})
+# add_executable(osm_downloader utility/openstreetmap/src/download_osm.cc)
+# add_executable(osm_parser utility/openstreetmap/src/parse_osm.cc)
+# add_executable(mapnik_exam utility/openstreetmap/src/mapnik_exam.cc ${MAPNIK_SOURCES} ${AGG_SOURCES})
 # Link libraries (if needed, e.g., pthread for multithreading)
 target_link_libraries(EchoServer pthread)
-target_link_libraries(osm_downloader CURL::libcurl)
-target_link_libraries(osm_parser 
-                        ${FREETYPE_LIBRARIES} 
-                        ${EXPAT_LIBRARIES} 
-                        ${Boost_LIBRARIES} 
-                        ${BZIP2_LIBRARIES}
-                        Threads::Threads ZLIB::ZLIB Protobuf::Protobuf)
-target_link_libraries(mapnik_exam pthread 
-                        ${FREETYPE_LIBRARIES} 
-                        ${EXPAT_LIBRARIES} 
-                        ${Boost_LIBRARIES} 
-                        ${BZIP2_LIBRARIES}
-                        ${HARFBUZZ_LIBRARIES}
-                        ${WEBP_LIB}
-                        Threads::Threads 
-                        ZLIB::ZLIB 
-                        Protobuf::Protobuf
-                        PNG::PNG
-                        ICU::uc
-                        ICU::i18n
-                        Boost::regex
-                        JPEG::JPEG
-                        TIFF::TIFF
-                        CURL::libcurl
-                        ${PROJ_LIBRARY})
+#target_link_libraries(osm_downloader CURL::libcurl)
+#target_link_libraries(osm_parser 
+#                        ${FREETYPE_LIBRARIES} 
+#                        ${EXPAT_LIBRARIES} 
+#                        ${Boost_LIBRARIES} 
+#                        ${BZIP2_LIBRARIES}
+#                        Threads::Threads ZLIB::ZLIB Protobuf::Protobuf)
+#target_link_libraries(mapnik_exam pthread 
+#                        ${FREETYPE_LIBRARIES} 
+#                        ${EXPAT_LIBRARIES} 
+#                        ${Boost_LIBRARIES} 
+#                        ${BZIP2_LIBRARIES}
+#                        ${HARFBUZZ_LIBRARIES}
+#                        ${WEBP_LIB}
+#                        Threads::Threads 
+#                        ZLIB::ZLIB 
+#                        Protobuf::Protobuf
+#                        PNG::PNG
+#                        ICU::uc
+#                        ICU::i18n
+#                        Boost::regex
+#                        JPEG::JPEG
+#                        TIFF::TIFF
+#                        CURL::libcurl
+#                        ${PROJ_LIBRARY})
