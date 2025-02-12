@@ -1,0 +1,1 @@
+add_executable(rvalue_exce rvalue_exce.cpp)
