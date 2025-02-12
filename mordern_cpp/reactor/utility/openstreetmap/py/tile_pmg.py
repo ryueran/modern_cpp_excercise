@@ -1,71 +1,43 @@
-import os
 import math
 import requests
-from PIL import Image
+import os
 
-# 下载瓦片的 URL 模板
-TILE_URL = "http://localhost/osm/{z}/{x}/{y}.png"
-SAVE_DIR = "osm_tiles"
+def deg2num(lat_deg, lon_deg, zoom):
+    lat_rad = math.radians(lat_deg)
+    n = 2.0 ** zoom
+    xtile = int((lon_deg + 180.0) / 360.0 * n)
+    ytile = int((1.0 - math.log(math.tan(lat_rad) + (1 / math.cos(lat_rad))) / math.pi) / 2.0 * n)
+    return (xtile, ytile)
 
-# 创建保存目录
-os.makedirs(SAVE_DIR, exist_ok=True)
+def generate_tile_url(x, y, zoom, base_url):
+    return f"{base_url}/{zoom}/{x}/{y}.png"
 
-def latlon_to_tile(lat, lon, zoom):
-    """ 将经纬度转换为瓦片 x, y 编号 """
-    n = 2 ** zoom
-    x = int((lon + 180.0) / 360.0 * n)
-    y = int((1.0 - math.log(math.tan(math.radians(lat)) + 1 / math.cos(math.radians(lat))) / math.pi) / 2.0 * n)
-    return x, y
+def download_tile(url, save_path):
+    response = requests.get(url)
+    if response.status_code == 200:
+        with open(save_path, 'wb') as f:
+            f.write(response.content)
+    else:
+        print(f"Failed to download {url}")
 
-def download_tile(z, x, y):
-    """ 下载单个瓦片 """
-    url = TILE_URL.format(z=z, x=x, y=y)
-    tile_path = os.path.join(SAVE_DIR, f"{z}_{x}_{y}.png")
-    
-    if not os.path.exists(tile_path):  # 避免重复下载
-        response = requests.get(url, stream=True)
-        if response.status_code == 200:
-            with open(tile_path, 'wb') as f:
-                for chunk in response.iter_content(1024):
-                    f.write(chunk)
-            print(f"下载: {tile_path}")
-        else:
-            print(f"无法下载: {tile_path}")
-    return tile_path
-
-def stitch_tiles(zoom, x_min, x_max, y_min, y_max):
-    """ 拼接瓦片为大地图 """
-    tile_size = 256  # 每个瓦片 256x256 像素
-    width = (x_max - x_min + 1) * tile_size
-    height = (y_max - y_min + 1) * tile_size
-    map_img = Image.new("RGB", (width, height))
-
-    for x in range(x_min, x_max + 1):
-        for y in range(y_min, y_max + 1):
-            tile_path = os.path.join(SAVE_DIR, f"{zoom}_{x}_{y}.png")
-            if os.path.exists(tile_path):
-                tile = Image.open(tile_path)
-                px = (x - x_min) * tile_size
-                py = (y - y_min) * tile_size
-                map_img.paste(tile, (px, py))
-
-    output_path = f"stitched_map_zoom{zoom}.png"
-    map_img.save(output_path)
-    print(f"地图已拼接: {output_path}")
-
-def download_and_stitch_map(lat1, lon1, lat2, lon2, zoom_levels):
-    """ 下载并拼接多个 zoom 级别的瓦片 """
-    for zoom in zoom_levels:
-        x_min, y_min = latlon_to_tile(lat1, lon1, zoom)
-        x_max, y_max = latlon_to_tile(lat2, lon2, zoom)
+def download_tiles_in_range(top_left, bottom_right, zoom_range, base_url, output_dir):
+    for zoom in range(zoom_range[0], zoom_range[1] + 1):
+        x_start, y_start = deg2num(top_left[0], top_left[1], zoom)
+        x_end, y_end = deg2num(bottom_right[0], bottom_right[1], zoom)
         
-        # 依次下载瓦片
-        for x in range(x_min, x_max + 1):
-            for y in range(y_min, y_max + 1):
-                download_tile(zoom, x, y)
+        for x in range(x_start, x_end + 1):
+            for y in range(y_start, y_end + 1):
+                url = generate_tile_url(x, y, zoom, base_url)
+                save_path = os.path.join(output_dir, f"{zoom}_{x}_{y}.png")
+                print(save_path)
+                download_tile(url, save_path)
+                print(f"Downloaded {save_path}")
 
-        # 拼接地图
-        stitch_tiles(zoom, x_min, x_max, y_min, y_max)
+# 示例使用
+top_left = (8.9887, -79.5228)  # 纽约市的左上角经纬度
+bottom_right = (8.9852, -79.5183)  # 纽约市的右下角经纬度
+zoom_range = (14, 15)  # 缩放级别范围
+base_url = "http://localhost/osm"
+output_dir = "/home/muzi/Documents/exer_repo_cpp/mordern_cpp/reactor/utility/openstreetmap/py/tiles"
 
-# 示例: 下载北京某区域 zoom 12-14 的地图
-download_and_stitch_map(39.96, 116.30, 39.90, 116.40, zoom_levels=[0])
+download_tiles_in_range(top_left, bottom_right, zoom_range, base_url, output_dir)
