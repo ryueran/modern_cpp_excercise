@@ -4,7 +4,7 @@
 class Processor
 {
 public:
-    virtual void process_message() {};
+    virtual void process_message() {}; // Technical debt
     virtual ~Processor() {}
 };
 

@@ -13,7 +13,7 @@ public:
         VISITREQUEST,
         DOWNLOADREQUEST
     };
-    void process_message(
+    void process_message( // Technical debt
         ReuqestType request_type,
         const std::string& message,
         int status,
