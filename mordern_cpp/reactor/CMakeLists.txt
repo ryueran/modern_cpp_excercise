@@ -100,6 +100,8 @@ set(SRC_FILES
     src/Handler.cc
     src/Reactor.cc
     src/Server.cc
+    src/processor/HttpProcessor.cc
+    src/MessageParser.cc
 )
 
 # Create the executable

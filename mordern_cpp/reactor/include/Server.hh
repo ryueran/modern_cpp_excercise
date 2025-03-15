@@ -7,6 +7,7 @@
 #include "ReadHandler.hh"
 #include "WriteHandler.hh"
 #include "Reactor.hh"
+#include "MessageParser.hh"
 
 class Server
 {
@@ -35,6 +36,7 @@ private:
     std::map<int, std::shared_ptr<Handler>> handlers_;
     int fd_;
     std::string root_directory;
+    std::unique_ptr<MessageParser> parser_;
 };
 
 #endif

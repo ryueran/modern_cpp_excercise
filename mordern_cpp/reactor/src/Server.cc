@@ -23,6 +23,7 @@ void Server::start_server()
 
     root_directory = get_executable_directory() + "/download";
     std::cout << "Root directory set to: " << root_directory << std::endl;
+    parser_.reset(new MessageParser(root_directory));
     // acceptor_.server_accept();
     // handler->register(std::bind(read_client, this, _1))
     std::shared_ptr<ReadHandler> ptr_handler = std::make_shared<ReadHandler>(acceptor_.get_server_fd());
@@ -49,35 +50,19 @@ void Server::read_client(int fd) {
     if (n > 0) {
         ptr_handler->message_buffer[n] = '\0'; // 确保字符串终止符
 
-        // 简单解析 HTTP 请求行
-        std::istringstream request_stream(ptr_handler->message_buffer);
-        std::string method, url, version;
-        request_stream >> method >> url >> version;
-
-        if (method == "GET") {
-            if (url == "/") {
-                // 默认主页响应
-                send_response(fd, "Hello World", 200);
-            } else if (url.find("/download/") == 0) {
-                // 处理下载请求
-                std::string file_path = url.substr(9); // 假设文件在当前目录下
-                handle_file_download(fd, file_path);
-            } else {
-                // 未知路径，返回 404
-                send_response(fd, "404 Not Found", 404);
-            }
-        } else {
-            // 不支持的方法，返回 405
-            send_response(fd, "405 Method Not Allowed", 405);
-        }
+        parser_->parse(fd, ptr_handler->message_buffer);
+        // Close connection
+        reactor_.remove_handler(handlers_[fd].get());
+        close_client(fd);
+        handlers_.erase(fd);
     } else if (n == 0) {
-        // 客户端关闭连接
+        // close clinet connection
         reactor_.remove_handler(ptr_handler.get());
         close_client(fd);
         handlers_.erase(fd);
     } else {
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
-            return; // 等待下次事件
+            return; // wait for next connection
         }
         perror("read error");
         reactor_.remove_handler(ptr_handler.get());

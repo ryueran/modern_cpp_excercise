@@ -7,7 +7,7 @@ class WriteHandler: public Handler
 {
 public:
     WriteHandler (int fd): Handler(fd) {
-        event_type_ = EventType::Read;
+        event_type_ = EventType::Write;
     }
 };
 
