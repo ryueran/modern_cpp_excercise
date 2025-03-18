@@ -22,6 +22,7 @@ void MessageParser::parse(int fd, char *message)
             // 默认主页响应
             http_pro_->send_response(fd, "Hello World", 200);
         } else if (url.find("/download/") == 0) {
+            //Safty bug technical debt
             // 处理下载请求
             std::string file_path = url.substr(9); // 假设文件在当前目录下
             std::cout << "File name is:" << file_path << std::endl;

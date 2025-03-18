@@ -122,8 +122,8 @@ void Server::handle_file_download(int fd, const std::string& file_path) {
     file.seekg(0, std::ios::beg);
 
     // 读取文件内容
-    std::vector<char> buffer(file_size);
-    if (!file.read(buffer.data(), file_size)) {
+    char buffer[file_size];
+    if (!file.read(buffer, file_size)) {
         send_response(fd, "500 Internal Server Error", 500);
         return;
     }
@@ -142,7 +142,7 @@ void Server::handle_file_download(int fd, const std::string& file_path) {
     write(fd, header.c_str(), header.size());
 
     // 发送文件内容
-    write(fd, buffer.data(), file_size);
+    write(fd, buffer, file_size);
 
     // 关闭连接
     reactor_.remove_handler(handlers_[fd].get());
