@@ -50,15 +50,15 @@ void Server::read_client(int fd) {
     if (n > 0) {
         ptr_handler->message_buffer[n] = '\0'; // 确保字符串终止符
 
-        parser_->parse(fd, ptr_handler->message_buffer);
+        parser_->parse(fd, ptr_handler->message_buffer, acceptor_.get_ssl());
         // Close connection
         reactor_.remove_handler(handlers_[fd].get());
-        close_client(fd);
+        close(fd);
         handlers_.erase(fd);
     } else if (n == 0) {
         // close clinet connection
         reactor_.remove_handler(ptr_handler.get());
-        close_client(fd);
+        close(fd);
         handlers_.erase(fd);
     } else {
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
@@ -66,7 +66,7 @@ void Server::read_client(int fd) {
         }
         perror("read error");
         reactor_.remove_handler(ptr_handler.get());
-        close_client(fd);
+        close(fd);
         handlers_.erase(fd);
     }
 }
@@ -94,7 +94,7 @@ void Server::write_client(int fd) {
         } else {
             perror("write error");
             reactor_.remove_handler(ptr_handler.get());
-            close_client(fd);
+            close(fd);
             handlers_.erase(fd);
             return;
         }
@@ -102,7 +102,7 @@ void Server::write_client(int fd) {
 
     if (bytes_written == total_bytes) {
         reactor_.remove_handler(ptr_handler.get());
-        close_client(fd);
+        close(fd);
         handlers_.erase(fd);
     }
 }
@@ -146,7 +146,7 @@ void Server::handle_file_download(int fd, const std::string& file_path) {
 
     // 关闭连接
     reactor_.remove_handler(handlers_[fd].get());
-    close_client(fd);
+    close(fd);
     handlers_.erase(fd);
 }
 
@@ -167,6 +167,6 @@ void Server::send_response(int fd, const std::string& message, int status_code) 
     write(fd, response_str.c_str(), response_str.size());
 
     reactor_.remove_handler(handlers_[fd].get());
-    close_client(fd);
+    close(fd);
     handlers_.erase(fd);
 }

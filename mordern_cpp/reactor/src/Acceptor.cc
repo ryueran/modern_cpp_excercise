@@ -2,6 +2,11 @@
 
 Acceptor::Acceptor()
 {
+    std::cout << "SSL init!" << std::endl;
+    init_openssl();
+    ctx = create_context();
+    configure_context(ctx);
+
     std::cout << "Acceptor constructed!" << std::endl;
     std::cout << "Construct sockt file!" << std::endl;
 
@@ -56,6 +61,7 @@ void Acceptor::server_accept(int server_fd) // tech debt
 {
     socklen_t addrlen = sizeof(server_addr_);
     socket_fd_ = accept(server_fd, (struct sockaddr *)&server_addr_, &addrlen);
+
     std::cout << "New Socket fd: " << socket_fd_ << std::endl; // The problem happens here, the new connection that calls the accept will overload the old acceüt of connection
     int flags = fcntl(socket_fd_, F_GETFL, 0);
     if (flags == -1) {
@@ -66,6 +72,23 @@ void Acceptor::server_accept(int server_fd) // tech debt
         perror("fcntl(F_SETFL)");
         return;
     }
+
+    ssl = SSL_new(ctx);
+    SSL_set_fd(ssl, socket_fd_);
+    // SSL handshake
+    int ret;
+    do {
+        ret = SSL_accept(ssl);
+        if (ret <= 0) {
+            int err = SSL_get_error(ssl, ret);
+            if (err == SSL_ERROR_WANT_READ || err == SSL_ERROR_WANT_WRITE) {
+                continue;
+            } else {
+                ERR_print_errors_fp(stderr);
+                break;
+            }
+        }
+    } while (ret <= 0);
 }
 
 int Acceptor::get_socket_fd()
@@ -76,4 +99,14 @@ int Acceptor::get_socket_fd()
 int Acceptor::get_server_fd()
 {
     return server_fd_;
+}
+
+SSL_CTX* Acceptor::get_context()
+{
+    return ctx;
+}
+
+SSL* Acceptor::get_ssl()
+{
+    return ssl;
 }

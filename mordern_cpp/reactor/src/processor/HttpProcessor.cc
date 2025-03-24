@@ -10,39 +10,30 @@ void HttpProcessor::process_message( // Technical debt
     const std::string& message,
     int status,
     int fd,
-    const std::string& file_path
+    const std::string& file_path,
+    SSL* ssl
 )
 {
     if(request_type == ReuqestType::VISITREQUEST)
     {
-        send_response(fd, message, status);
+        send_response(fd, message, status, ssl);
     } else if (request_type == ReuqestType::DOWNLOADREQUEST)
     {
-        handle_file_download(fd, file_path);
+        handle_file_download(fd, file_path, ssl);
     } else {
         // do nothing
     }
 }
 
-void HttpProcessor::send_response(int fd, const std::string& message, int status)
+void HttpProcessor::send_response(int fd, const std::string& message, int status, SSL* ssl)
 {
-    std::string status_text = (status == 200) ? "OK" :
-                              (status == 404) ? "Not Found" :
-                              (status == 405) ? "Method Not Allowed" : "Internal Server Error";
-
-    std::ostringstream response;
-    response << "HTTP/1.1 " << status << " " << status_text << "\r\n"
-             << "Content-Type: text/plain\r\n"
-             << "Content-Length: " << message.size() << "\r\n"
-             << "Connection: close\r\n"
-             << "\r\n"
-             << message;
-
-    std::string response_str = response.str();
-    write(fd, response_str.c_str(), response_str.size());
+    const char* response = "HTTP/1.1 200 OK\r\nContent-Length: 12\r\n\r\nHello World!";
+    SSL_write(ssl, response, strlen(response));
+    SSL_shutdown(ssl);
+    SSL_free(ssl);
 }
 
-void HttpProcessor::handle_file_download(int fd, const std::string& file_path)
+void HttpProcessor::handle_file_download(int fd, const std::string& file_path, SSL* ssl)
 {
     std::string absolute_file_path = root_path_ + file_path;
     std::cout << "root path: " << root_path_ << std::endl;
@@ -50,7 +41,7 @@ void HttpProcessor::handle_file_download(int fd, const std::string& file_path)
 
     std::ifstream file(absolute_file_path, std::ios::binary | std::ios::ate);
     if (!file.is_open()) {
-        send_response(fd, "404 Not Found", 404);
+        send_response(fd, "404 Not Found", 404, ssl);
         return;
     }
 
@@ -61,7 +52,7 @@ void HttpProcessor::handle_file_download(int fd, const std::string& file_path)
     // read file content
     std::vector<char> buffer(file_size);
     if (!file.read(buffer.data(), file_size)) {
-        send_response(fd, "500 Internal Server Error", 500);
+        send_response(fd, "500 Internal Server Error", 500, ssl);
         return;
     }
 

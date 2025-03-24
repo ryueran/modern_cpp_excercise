@@ -70,6 +70,9 @@ find_library(WEBP_LIB webp PATHS /usr/lib /usr/local/lib)
 find_path(WEBP_INCLUDE_DIR webp/decode.h PATHS /usr/include /usr/local/include)
 include_directories(${WEBP_INCLUDE_DIR})
 
+# 查找 OpenSSL
+find_package(OpenSSL REQUIRED)
+
 include_directories(${HARFBUZZ_INCLUDE_DIRS})
 link_directories(${HARFBUZZ_LIBRARY_DIRS})
 
@@ -112,7 +115,7 @@ add_executable(server_simple src/main_server_simple.cc)
 # add_executable(osm_parser utility/openstreetmap/src/parse_osm.cc)
 # add_executable(mapnik_exam utility/openstreetmap/src/mapnik_exam.cc ${MAPNIK_SOURCES} ${AGG_SOURCES})
 # Link libraries (if needed, e.g., pthread for multithreading)
-target_link_libraries(EchoServer pthread)
+target_link_libraries(EchoServer pthread OpenSSL::SSL OpenSSL::Crypto)
 #target_link_libraries(osm_downloader CURL::libcurl)
 #target_link_libraries(osm_parser 
 #                        ${FREETYPE_LIBRARIES} 

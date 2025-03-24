@@ -3,6 +3,8 @@
 
 #include "Processor.hh"
 #include <string>
+#include <openssl/ssl.h>
+#include <openssl/err.h>
 
 class HttpProcessor: public Processor
 {
@@ -18,9 +20,10 @@ public:
         const std::string& message,
         int status,
         int fd,
-        const std::string& file_path);
-    void send_response(int fd, const std::string& message, int status);
-    void handle_file_download(int fd, const std::string& file_path);
+        const std::string& file_path,
+        SSL* ssl);
+    void send_response(int fd, const std::string& message, int status, SSL *ssl);
+    void handle_file_download(int fd, const std::string& file_path, SSL* ssl);
 private:
     std::string root_path_;
 };
