@@ -1,0 +1,1 @@
+add_executable(initializer_list initializer_list.cc)
