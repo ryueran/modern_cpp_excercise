@@ -27,8 +27,19 @@ void HttpProcessor::process_message( // Technical debt
 
 void HttpProcessor::send_response(int fd, const std::string& message, int status, SSL* ssl)
 {
-    const char* response = "HTTP/1.1 200 OK\r\nContent-Length: 12\r\n\r\nHello World!";
-    SSL_write(ssl, response, strlen(response));
+    std::string status_text = (status == 200) ? "OK" :
+                              (status == 404) ? "Not Found" :
+                              (status == 405) ? "Method Not Allowed" : "Internal Server Error";
+    std::ostringstream response;
+    response << "HTTP/1.1 " << status << " " << status_text << "\r\n"
+             << "Content-Type: text/plain\r\n"
+             << "Content-Length: " << message.size() << "\r\n"
+             << "Connection: close\r\n"
+             << "\r\n"
+             << message;
+
+    std::string response_str = response.str();
+    SSL_write(ssl, response_str.c_str(), strlen(response_str.c_str()));
     SSL_shutdown(ssl);
     SSL_free(ssl);
 }

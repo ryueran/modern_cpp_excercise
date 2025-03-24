@@ -45,7 +45,7 @@ void Server::accept(int server_fd)
 
 void Server::read_client(int fd) {
     auto ptr_handler = handlers_[fd];
-    ssize_t n = read(fd, ptr_handler->message_buffer, sizeof(ptr_handler->message_buffer) - 1);
+    ssize_t n = SSL_read(acceptor_.get_ssl(), ptr_handler->message_buffer, sizeof(ptr_handler->message_buffer) - 1);
 
     if (n > 0) {
         ptr_handler->message_buffer[n] = '\0'; // 确保字符串终止符
