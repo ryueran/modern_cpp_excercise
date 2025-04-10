@@ -1,1 +1,2 @@
-add_executable(temp_test temp_test.cc)
+add_executable(temp_iterate temp_iterate.cc)
+add_executable(crtp crtp_static_polymorphism.cc)
