@@ -1,3 +1,4 @@
 add_executable(temp_iterate temp_iterate.cc)
 add_executable(crtp crtp_static_polymorphism.cc)
 add_executable(temp_iterate_arg_temp temp_iterate_arg_temp.cc)
+add_executable(template_serialize template_serialize.cc)

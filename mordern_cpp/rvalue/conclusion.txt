@@ -1,0 +1,20 @@
+
+template<typename T>
+T function(T& t)
+
+param:
+--------------- -----------------
+lvalue(T)      |rvalue          |
+--------------- -----------------
+rvalue         |compile error   |
+--------------- -----------------
+
+template<typename T>
+T function(T&& t)
+
+param:
+--------------- -----------------
+lvalue(T&)     |lvalue          |
+--------------- -----------------
+rvalue(T&&)    |rvalue          |
+--------------- -----------------
