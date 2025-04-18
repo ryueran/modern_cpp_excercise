@@ -18,3 +18,40 @@ lvalue(T&)     |lvalue          |
 --------------- -----------------
 rvalue(T&&)    |rvalue          |
 --------------- -----------------
+
+Note.1:
+Widget w;
+w.setName("Adela Novak");
+
+If the parameter of setName is universal reference: 
+the "" value will be transfered to operator = (const char*) of std::string
+
+otherwise:
+1. calls constructor of std::string to create temp variable
+2. call move assignment
+3. call string destructor
+
+That's why:
+template<typename T>
+setName(T &&t)
+
+is more effecient than:
+void setName(const std::string& name);
+void setName(std::string&& name);
+
+Note.2:
+template<typename T>
+void setSignText(T&& text)
+{
+    sign.setText(text);
+    auto now = std::chrono::system_lock::now();
+    signHistory.add(now, std::forward<T>(text));
+}
+
+Use std::move or std::forward(recommanded for universal reference)
+when last time use the parameter
+
+Note.3:
+Do not return std::move or std::forward for local variable (such as class member in
+public methods)
+It will brake RVO mechanism!
