@@ -21,11 +21,7 @@ public:
 };
 
 int main() {
-    //std::shared_ptr<SharedPtrExample> ptr1 = std::make_shared<SharedPtrExample>();
-    //std::cout << sizeof(ptr1) << std::endl; // Output the size of shared_ptr
-    //SharedPtrExample*rawPtr = new SharedPtrExample();
-    //std::cout << sizeof(rawPtr) << std::endl; // Output the size of raw pointer
-    SharedPtrExample* ptr1 = new SharedPtrExample();
+    auto ptr1 = SharedPtrExample::create();
     ptr1->process();
     std::cout << "Number of shared pointers in vector: " << sharedPtrVec.size() << std::endl;
     return 0;
